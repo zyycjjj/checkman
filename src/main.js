@@ -13,7 +13,7 @@ import Nprogress from 'nprogress'
 import 'nprogress/nprogress.css'
 
 // 配置请求的根路径
-axios.defaults.baseURL = '接口地址'
+// axios.defaults.baseURL = 'http://zhiquwl.com/microsign/api/'
 // 配置请求拦截器
 // 在request拦截器中,展示进度条Nprogress.start()
 axios.interceptors.request.use(config => {
@@ -29,6 +29,8 @@ axios.interceptors.response.use(config => {
   Nprogress.done()
   return config
 })
+
+Vue.prototype.$http = axios
 
 Vue.config.productionTip = false
 
