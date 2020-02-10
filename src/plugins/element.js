@@ -1,0 +1,84 @@
+import Vue from 'vue'
+import {
+  Button,
+  Tag,
+  Form,
+  FormItem,
+  Input,
+  Message,
+  MessageBox,
+  Switch,
+  Container,
+  Header,
+  Aside,
+  Main,
+  Menu,
+  Submenu,
+  MenuItemGroup,
+  MenuItem,
+  Breadcrumb,
+  BreadcrumbItem,
+  Card,
+  Row,
+  Col,
+  Table,
+  TableColumn,
+  Tooltip,
+  Pagination,
+  Dialog,
+  Tree,
+  Select,
+  Option,
+  Step,
+  Steps,
+  TabPane,
+  Tabs,
+  Cascader,
+  Upload,
+  Alert,
+  InputNumber,
+  Checkbox,
+  Timeline,
+  TimelineItem
+} from 'element-ui'
+Vue.use(Timeline)
+Vue.use(TimelineItem)
+Vue.use(Checkbox)
+Vue.use(InputNumber)
+Vue.use(Step)
+Vue.use(Alert)
+Vue.use(Upload)
+Vue.use(Cascader)
+Vue.use(TabPane)
+Vue.use(Tabs)
+Vue.use(Select)
+Vue.use(Steps)
+Vue.use(Option)
+Vue.use(Button)
+Vue.use(Form)
+Vue.use(FormItem)
+Vue.use(Input)
+Vue.use(Tag)
+Vue.use(Container)
+Vue.use(Header)
+Vue.use(Aside)
+Vue.use(Main)
+Vue.use(Menu)
+Vue.use(Submenu)
+Vue.use(MenuItemGroup)
+Vue.use(MenuItem)
+Vue.use(Breadcrumb)
+Vue.use(BreadcrumbItem)
+Vue.use(Card)
+Vue.use(Row)
+Vue.use(Col)
+Vue.use(Table)
+Vue.use(TableColumn)
+Vue.use(Switch)
+Vue.use(Tooltip)
+Vue.use(Pagination)
+Vue.use(Dialog)
+Vue.use(Tree)
+// 挂载
+Vue.prototype.$message = Message
+Vue.prototype.$confirm = MessageBox.confirm
