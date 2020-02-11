@@ -29,8 +29,7 @@
             size="mini"
             @click="delEnty(scope.row.id)"
           >删除</el-button>
-          <!-- 分配角色按钮 -->
-          <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
+          <el-tooltip effect="dark" content="获取二维码" placement="top" :enterable="false">
             <el-button
               type="warning"
               icon="el-icon-setting"
@@ -128,6 +127,8 @@ export default {
     // 获取入口列表
     getEntylist () {
       // 从sessionStorage中获取,并修改格式
+      this.DoorData = JSON.parse(window.sessionStorage.getItem('entry_list'))
+      console.log(this.DoorData)
       console.log('获取入口列表成功')
     },
     // 监听添加入口对话框关闭事件
