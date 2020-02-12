@@ -7,7 +7,8 @@ import 'element-ui/lib/theme-chalk/index.css'
 import './assets/css/global.css'
 // 导入axios
 import axios from 'axios'
-
+// 导入时间处理插件
+import Moment from 'moment'
 // 导入假进度条的样式和包
 import Nprogress from 'nprogress'
 import 'nprogress/nprogress.css'
@@ -30,6 +31,10 @@ axios.interceptors.response.use(config => {
   return config
 })
 
+// 定义全局的过滤器
+Vue.filter('dateFilter', function (value) {
+  return Moment.format('YYYYMMDD')
+})
 Vue.prototype.$http = axios
 
 Vue.config.productionTip = false

@@ -35,7 +35,7 @@
     </div>
     <!-- 超级管理员登录页面跳转 -->
     <div class="svip_login">
-      <el-button size='mini' type='success' @click='gotoSVip'>点击跳转到超级管理员登陆</el-button>
+      <el-button size='mini' type='success' @click='gotoVip'>点击跳转到小区管理员登陆</el-button>
     </div>
   </div>
 </template>
@@ -80,11 +80,16 @@ export default {
       this.$refs.loginFormRef.resetFields()
     },
     login () {
+      // 测试代码
+      // window.sessionStorage.setItem('comid', 1)
+      // this.$router.push('/home')
       this.$refs.loginFormRef.validate(async valid => {
         if (!valid) return
+        // const res = await this.$http.post('/microsign/api/adm/login', this.loginForm)
         const res = await this.$http.get('http://localhost:3000/login', { params: this.loginForm })
         console.log(res)
         // 错误码判断
+        // if (res.code !== 1) return this.$message.error('登陆失败')
         this.$message.success('登陆成功')
         // 1.将登录成功之后的token,保存到客户端的sessionStorage中
         window.sessionStorage.setItem('token', res.data.token)
@@ -92,16 +97,11 @@ export default {
         //   1.2 token 之应该在当前网站打开期间生效,所以将token保存在sessionStorage中
         // 2.通过编程式导航跳转到后台主页,路由地址是/home
         // 3.将登录返回的入口列表数据存入sessionStorage中
-        this.entry_list = JSON.stringify(res.data.entry_list)
-        window.sessionStorage.setItem('entry_list', this.entry_list)
-        window.sessionStorage.setItem('groupid', res.data.groupid)
-        // 存放组织类型
-        window.sessionStorage.setItem('isbus', res.data.isbus)
-        this.$router.push('/home')
+        this.$router.push('/home-svip')
       })
     },
-    gotoSVip () {
-      this.$router.push('/login-svip')
+    gotoVip () {
+      this.$router.push('/login')
     }
   }
 }

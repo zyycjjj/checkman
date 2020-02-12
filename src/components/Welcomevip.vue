@@ -1,5 +1,5 @@
 <template>
-  <h1>欢迎使用本系统</h1>
+  <h1>动态显示</h1>
 </template>
 
 <script>

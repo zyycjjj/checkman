@@ -2,20 +2,13 @@
   <el-container class="pinfo">
     <el-tabs type="border-card">
       <el-tab-pane label="出入数量">
-        <el-form ref="form" :model="date" label-width="80px">
-          <el-form-item label="活动时间">
+        <el-form ref="form" :model="date" label-width="130px">
+          <el-form-item label="请选择开始时间">
             <el-col :span="11">
-              <el-date-picker type="date" placeholder="选择日期" v-model="date.ts" style="width: 100%;"></el-date-picker>
+              <el-date-picker type="date" placeholder="选择日期" v-model="date.ts" format="yyyy-MM-dd"
+      value-format="yyyyMMdd" style="width: 100%;"></el-date-picker>
             </el-col>
             <el-col class="line" :span="2">-</el-col>
-            <el-col :span="11">
-              <el-date-picker
-                type="datdatee"
-                placeholder="选择日期"
-                v-model="date.te"
-                style="width: 100%;"
-              ></el-date-picker>
-            </el-col>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="onSubmit">点击查询</el-button>
@@ -30,7 +23,7 @@
         </el-card>
       </el-tab-pane>
       <el-tab-pane label="出入信息">
-        <el-button :click="excel" type="success">导出出入信息为excel</el-button>
+        <el-button @click="excel" type="success">导出出入信息为excel</el-button>
         <el-table :data="inoutData" border style="width: 100%">
           <el-table-column type="index" label="#"></el-table-column>
           <el-table-column prop="uid" label="用户Id" width="100"></el-table-column>
@@ -99,8 +92,7 @@ export default {
     return {
       comid: '',
       date: {
-        ts: '',
-        te: ''
+        ts: ''
       },
       tableData: [],
       inoutData: [],
@@ -121,6 +113,7 @@ export default {
       // console.log('submit!')
       // 处理选择的日期的格式,修改date数据
       // 调用获取查询方法
+      console.log(this.date.ts)
       this.getPeo()
     },
     getcomid () {
@@ -128,14 +121,7 @@ export default {
     },
     // 获取出入人数
     async getPeo () {
-      // 处理日期格式
-      // const res = await this.$http.get('/microsign/api/com/stats', {
-      //   params: {
-      //     ts: this.date.ts,
-      //     te: this.date.te
-      //   }
-      // })
-      const res = await this.$http.get('http://localhost:3000/stats')
+      const res = await this.$http.get(`http://localhost:3000/stats?ts=${this.date.ts}`)
       this.data1.push(res.data)
       this.tableData = this.data1
       this.data1 = []
@@ -149,9 +135,22 @@ export default {
       this.inoutData = res.data
     },
     // 导出为excel
-    async excel () {
-      // const res = await this.$http.get(`/microsign/api/com/output?ts=${this.date.ts}&te=${this.date.te}&comid=${this.comid}`)
-      // console.log(res)
+    excel () {
+      this.$http.post('/microsign/api/com/output', this.date, { responseType: 'arraybuffer' }).then((_res) => {
+        const blob = new Blob([_res.data], { type: 'application/vnd.ms-excel;' })
+        const a = document.createElement('a')
+        // 生成文件路径
+        const href = window.URL.createObjectURL(blob)
+        a.href = href
+        const _fileName = _res.headers['content-disposition'].split(';')[1].split('=')[1].split('.')[0]
+        // 文件名中有中文 则对文件名进行转码
+        a.download = decodeURIComponent(_fileName)
+        // 利用a标签做下载
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        window.URL.revokeObjectURL(href)
+      })
     },
     // 获取用户详细信息
     async getUdetail () {

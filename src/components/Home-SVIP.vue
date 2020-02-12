@@ -24,17 +24,13 @@
           router
         >
           <!-- 一级菜单 -->
-          <el-menu-item index="/doorman">
+          <el-menu-item index="/coman">
             <i class="el-icon-menu"></i>
-            <span slot="title">小区入口管理</span>
+            <span slot="title">组织管理</span>
           </el-menu-item>
-          <el-menu-item index="/pinfo">
+          <el-menu-item index="/data">
             <i class="el-icon-menu"></i>
-            <span slot="title">小区出入信息</span>
-          </el-menu-item>
-          <el-menu-item index="/peoman">
-            <i class="el-icon-menu"></i>
-            <span slot="title">住户信息管理</span>
+            <span slot="title">数据统计</span>
           </el-menu-item>
         </el-menu>
       </el-aside>

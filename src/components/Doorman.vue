@@ -133,8 +133,7 @@ export default {
     },
     // 监听添加入口对话框关闭事件
     addialogClose () {
-      console.log('123')
-      console.log(this)
+      this.addDialogvisiable = false
       this.$refs.addFormRef.resetFields()
     },
     addEnty () {

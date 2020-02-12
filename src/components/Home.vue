@@ -4,7 +4,7 @@
     <el-header>
       <div>
         <img src="../assets/imgs/avatar.jpg" alt />
-        <span>小区微签管理</span>
+        <span>组织微签管理</span>
       </div>
       <el-button type="info" @click="logout">退出</el-button>
     </el-header>
@@ -26,15 +26,15 @@
           <!-- 一级菜单 -->
           <el-menu-item index="/doorman">
             <i class="el-icon-menu"></i>
-            <span slot="title">小区入口管理</span>
+            <span slot="title">入口管理</span>
           </el-menu-item>
           <el-menu-item index="/pinfo">
             <i class="el-icon-menu"></i>
-            <span slot="title">小区出入信息</span>
+            <span slot="title">出入信息</span>
           </el-menu-item>
           <el-menu-item index="/peoman">
             <i class="el-icon-menu"></i>
-            <span slot="title">住户信息管理</span>
+            <span slot="title">成员管理</span>
           </el-menu-item>
         </el-menu>
       </el-aside>
