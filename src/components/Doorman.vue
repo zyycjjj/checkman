@@ -195,13 +195,14 @@ export default {
           this.$message.warning('修改失败')
           return false
         }
-        this.DoorData = this.DoorData.map(item => {
+        this.changeDialogvisiable = false
+        this.DoorData.map(item => {
           if (item.id === this.entyinfo.id) {
             item.name = this.entyinfo.name
           }
         })
+        window.sessionStorage.setItem('entry_list', JSON.stringify(this.DoorData))
         this.id = res.data.id
-        this.changeDialogvisiable = !this.changeDialogvisiable
         console.log('这是', this.changeDialogvisiable)
         this.$message.success('修改成功')
       })
@@ -249,22 +250,14 @@ export default {
     // 获取对应入口的二维码图片
     async getPicout (id) {
       this.imgVisable = !this.imgVisable
-      this.imgUrl = '../assets/logo.png'
       let outurl = `http://localhost:8081/microsign/api/com/qrcode/${this.comid}/${id}/0`
       this.imgUrl = outurl
-      const res = await this.$http.get(outurl)
-      this.res.imgUrl = res.data
     },
     async getPicin (id) {
-      // 发请求 拿图片
-      // const res = await this.$http.get(
-      //   `/microsign/api/com/qrcode/${this.comid}/${id}`
-      // )
-      // console.log(res)
       this.imgVisable = !this.imgVisable
-      let inurl = `http://localhost:8081/microsign/api/com/qrcode/${Number(this.comid)}/${id}/1`
-      const res = await this.$http.get(inurl)
-      console.log(res)
+      let inurl = `http://localhost:8081/microsign/api/com/qrcode/${Number(
+        this.comid
+      )}/${id}/1`
       this.imgUrl = inurl
     }
   }
@@ -289,9 +282,9 @@ export default {
 .el-dialog__body {
   height: 300px;
 }
-.info{
+.info {
   position: relative;
-  img{
+  img {
     position: absolute;
     right: 0px;
     top: 0px;

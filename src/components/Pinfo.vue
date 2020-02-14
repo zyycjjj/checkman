@@ -135,7 +135,7 @@ export default {
     },
     // 获取出入详情
     async getDetails () {
-      const res = await this.$http.get(`/microsign/api/com/details/${this.comid}`)
+      const res = await this.$http.get(`/microsign/api/com/details/${Number(this.comid)}`)
       // 赋值信息表格绑定的数据
       this.inoutData = res.data
     },
