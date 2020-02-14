@@ -111,9 +111,9 @@ export default {
   methods: {
     onSubmit () {
       // console.log('submit!')
-      // 处理选择的日期的格式,修改date数据
+      // 处理选择的日期的格式,已修改为20200202的格式,使用moment插件,修改date数据
       // 调用获取查询方法
-      console.log(this.date.ts)
+      // console.log(this.date.ts)
       this.getPeo()
     },
     getcomid () {
@@ -121,17 +121,18 @@ export default {
     },
     // 获取出入人数
     async getPeo () {
-      const res = await this.$http.get(`http://localhost:3000/stats?ts=${this.date.ts}`)
+      const res = await this.$http.get(`/microsign/api/com/stats`, this.date)
+      // 把返回的json对象push到数组里.方便表格展示
       this.data1.push(res.data)
+      // 将处理完的数据赋给数量展示的表格绑定的对象
       this.tableData = this.data1
+      // 清空辅助变量,方便下次使用
       this.data1 = []
     },
     // 获取出入详情
     async getDetails () {
-      // const res = await this.$http.get(`/microsign/api/com/details/${this.comid}`)
-      // this.inoutData = res
-      // console.log(res)
-      const res = await this.$http.get('http://localhost:3000/details')
+      const res = await this.$http.get(`/microsign/api/com/details/${this.comid}`)
+      // 赋值信息表格绑定的数据
       this.inoutData = res.data
     },
     // 导出为excel

@@ -26,15 +26,19 @@
           <!-- 一级菜单 -->
           <el-menu-item index="/doorman">
             <i class="el-icon-menu"></i>
-            <span slot="title">入口管理</span>
+            <span slot="title">入口数据管理</span>
           </el-menu-item>
           <el-menu-item index="/pinfo">
             <i class="el-icon-menu"></i>
-            <span slot="title">出入信息</span>
+            <span slot="title">出入信息管理</span>
           </el-menu-item>
           <el-menu-item index="/peoman">
             <i class="el-icon-menu"></i>
-            <span slot="title">成员管理</span>
+            <span slot="title">成员信息管理</span>
+          </el-menu-item>
+          <el-menu-item index="/welcome">
+            <i class="el-icon-menu"></i>
+            <span slot="title">实时出入数据</span>
           </el-menu-item>
         </el-menu>
       </el-aside>

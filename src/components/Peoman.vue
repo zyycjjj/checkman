@@ -33,7 +33,7 @@
       <el-table :data="userDetail" border style="width: 100%">
         <el-table-column type="index" label="#"></el-table-column>
         <el-table-column prop="dt" label="时间" width="100"></el-table-column>
-         <el-table-column prop="stat" label="出入状态" width="100">
+        <el-table-column prop="stat" label="出入状态" width="100">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.stat === '0'" type="warning">出门</el-tag>
             <el-tag v-else type="success">进入</el-tag>
@@ -84,19 +84,23 @@ export default {
   methods: {
     // 获取用户列表
     async getUserList () {
-      // 模拟数据测试代码
-      const res = await this.$http.get('http://localhost:3000/userlist')
-      this.userList = res.data
-      console.log(res.data)
-      // this.ulistData = { comid: this.comid }
+      // // 模拟数据测试代码
+      // const res = await this.$http.get('http://localhost:3000/userlist')
+      // this.userList = res.data
+      // console.log(res.data)
+      this.ulistData = { comid: this.comid }
       // this.ulistData = JSON.stringify(this.ulistData)
-      // console.log(this.ulistData)
-      // const res = await this.$http.post('/microsign/api/com/userlist', this.ulistData)
-      // console.log(res)
+      const res = await this.$http.post(
+        '/microsign/api/com/userlist',
+        this.ulistData
+      )
+      this.userList = res.data
+      console.log(res)
     },
     // 获取用户跟踪数据
     async getOwn (id) {
-      const res = await this.$http.get('http://localhost:3000/udetails')
+      const param = { groupid: this.comid, uid: id }
+      const res = await this.$http.post('/microsign/api/com/trace', param)
       this.userDetail = res.data
       console.log(res)
       // 展示模态框

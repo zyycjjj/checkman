@@ -20,11 +20,7 @@
         </el-form-item>
         <!-- 密码 -->
         <el-form-item prop="p">
-          <el-input
-            type="password"
-            v-model="loginForm.p"
-            prefix-icon="iconfont icon-showpassword"
-          ></el-input>
+          <el-input type="password" v-model="loginForm.p" prefix-icon="iconfont icon-showpassword"></el-input>
         </el-form-item>
         <!-- 按钮区域 -->
         <el-form-item class="btns">
@@ -35,7 +31,7 @@
     </div>
     <!-- 超级管理员登录页面跳转 -->
     <div class="svip_login">
-      <el-button size='mini' type='success' @click='gotoSVip'>点击跳转到超级管理员登陆</el-button>
+      <el-button size="mini" type="success" @click="gotoSVip">点击跳转到超级管理员登陆</el-button>
     </div>
   </div>
 </template>
@@ -82,9 +78,12 @@ export default {
     login () {
       this.$refs.loginFormRef.validate(async valid => {
         if (!valid) return
-        const res = await this.$http.get('http://localhost:3000/login', { params: this.loginForm })
-        console.log(res)
+        const res = await this.$http.post(
+          '/microsign/api/com/login',
+          this.loginForm
+        )
         // 错误码判断
+        if (res.status !== 200) { return this.$message.warning('登陆失败,请重新登录') }
         this.$message.success('登陆成功')
         // 1.将登录成功之后的token,保存到客户端的sessionStorage中
         window.sessionStorage.setItem('token', res.data.token)
@@ -154,7 +153,7 @@ export default {
   display: flex;
   justify-content: flex-end;
 }
-.svip_login{
+.svip_login {
   position: absolute;
   bottom: 0;
   right: 0;

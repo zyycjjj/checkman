@@ -4,11 +4,11 @@
       <el-col :span="6"></el-col>
       <el-col :span="12">
         <el-button
-            type="primary"
-            icon="el-icon-edit"
-            size="mini"
-            @click="addDialogvisiable = true"
-          >点击增加入口</el-button>
+          type="primary"
+          icon="el-icon-edit"
+          size="mini"
+          @click="addDialogvisiable = true"
+        >点击增加入口</el-button>
       </el-col>
     </el-row>
     <el-table :data="DoorData" border style="width: 100%">
@@ -42,9 +42,9 @@
     </el-table>
 
     <!-- 添加入口对话框模态框 -->
-    <el-dialog title="添加入口" :visible.sync="addDialogvisiable" width="50%" @close='addialogClose'>
+    <el-dialog title="添加入口" :visible.sync="addDialogvisiable" width="50%" @close="addialogClose">
       <!-- 内容主体区域 -->
-      <el-form ref='addFormRef' :model="entrytip" :rules="addFormRules" label-width="70px">
+      <el-form ref="addFormRef" :model="entrytip" :rules="addFormRules" label-width="70px">
         <el-form-item label="入口名" prop="n">
           <el-input v-model="entrytip.n"></el-input>
         </el-form-item>
@@ -55,10 +55,15 @@
       </span>
     </el-dialog>
     <!-- 修改入口对话框模态框 -->
-    <el-dialog title="修改" :visible.sync="changeDialogvisiable" width="50%" @close='changedialogClose'>
+    <el-dialog
+      title="修改"
+      :visible.sync="changeDialogvisiable"
+      width="50%"
+      @close="changedialogClose"
+    >
       <!-- 内容主体区域 -->
-      <el-form ref='changeFormRef' :model="entyinfo" :rules="changeFormRules" label-width="70px">
-        <el-form-item label="入口名" prop="n">
+      <el-form ref="changeFormRef" :model="entyinfo" :rules="changeFormRules" label-width="70px">
+        <el-form-item label="入口名" prop="name">
           <el-input v-model="entyinfo.name"></el-input>
         </el-form-item>
       </el-form>
@@ -66,6 +71,10 @@
         <el-button @click="changeDialogvisiable = false">取 消</el-button>
         <el-button type="primary" @click="changeEnty">确 定</el-button>
       </span>
+    </el-dialog>
+    <!-- 展示图片 -->
+    <el-dialog title="门禁二维码" :visible.sync='imgVisable' width="25%" @close='imgdialogClose'>
+      <img :src="imgUrl" class="ewm" alt="">
     </el-dialog>
   </div>
 </template>
@@ -75,12 +84,7 @@ export default {
   data () {
     return {
       comid: '',
-      DoorData: [
-        {
-          id: 1,
-          name: '南门'
-        }
-      ],
+      DoorData: [],
       // 控制添加用户对话框的显示与隐藏
       addDialogvisiable: false,
       changeDialogvisiable: false,
@@ -92,14 +96,10 @@ export default {
       addData: {},
       //
       addFormRules: {
-        n: [
-          { required: true, message: '请输入入口', trigger: 'blur' }
-        ]
+        n: [{ required: true, message: '请输入入口', trigger: 'blur' }]
       },
       changeFormRules: {
-        name: [
-          { required: true, message: '请输入入口', trigger: 'blur' }
-        ]
+        name: [{ required: true, message: '请输入入口', trigger: 'blur' }]
       },
       // 要修改的入口名称
       n: '',
@@ -111,7 +111,11 @@ export default {
         name: ''
       },
       // 修改的入口信息传参
-      changeData: {}
+      changeData: {},
+      // 后端返回图片后做的转换
+      imgUrl: '',
+      // 二维码对话框
+      imgVisable: false
     }
   },
   created () {
@@ -128,7 +132,6 @@ export default {
     getEntylist () {
       // 从sessionStorage中获取,并修改格式
       this.DoorData = JSON.parse(window.sessionStorage.getItem('entry_list'))
-      console.log(this.DoorData)
       console.log('获取入口列表成功')
     },
     // 监听添加入口对话框关闭事件
@@ -138,14 +141,20 @@ export default {
     },
     addEnty () {
       // 发请求增加入口 注意参数
-      const addDate = {
+      this.addDate = {
         n: this.entrytip.n,
         comid: this.comid
       }
-      this.addData = JSON.stringify(addDate)
+      // this.addData = JSON.stringify(addDate)
       this.$refs.addFormRef.validate(async valid => {
-        const res = await this.$http.post('/microsign/api/com/entry', this.addData)
+        const res = await this.$http.post(
+          '/microsign/api/com/entry',
+          this.addData
+        )
         console.log(res)
+        if (res.status !== 200) return this.$message.warning('添加失败')
+        // 重新调用获取入口列表的函数
+        this.getEntylist()
         this.addDialogvisiable = false
       })
     },
@@ -153,46 +162,86 @@ export default {
       const changeDate = {
         id: this.id,
         comid: this.comid,
-        n: this.n
+        n: this.entyinfo.name
       }
       this.changeData = JSON.stringify(changeDate)
       this.$refs.changeFormRef.validate(async valid => {
-        const res = await this.$http.post('/microsign/api/com/entry', this.changeData)
-        console.log(res)
+        const res = await this.$http.post(
+          '/microsign/api/com/entry',
+          this.changeData
+        )
+        if (res.status !== 200) return this.$message.warning('修改失败')
         this.getEntylist()
+        this.$message.success('修改成功')
         this.changeDialogvisiable = false
       })
     },
     changeEntyVis (info) {
       this.entyinfo = info
-      this.n = info.name
       this.id = info.id
       this.changeDialogvisiable = true
     },
     async delEnty (id) {
-      // 发请求删除,重新获取入口列表
-      let delInfo = {
-        id: id
+      const resConfirm = await this.$confirm(
+        '此操作将永久删除该信息, 是否继续?',
+        '提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      ).catch(err => err)
+      if (resConfirm === 'confirm') {
+        // 发请求删除,重新获取入口列表
+        let delInfo = {
+          id: id
+        }
+        console.log(delInfo)
+        // delInfo = JSON.stringify(delInfo)
+        const res = await this.$http.post(
+          '/microsign/api/com/entry/del',
+          delInfo
+        )
+        if (res.status !== 200) return this.$message.error('删除失败')
+        this.$message.success('删除成功')
+      } else {
+        this.$message.info('取消删除操作')
       }
-      console.log(delInfo)
-      delInfo = JSON.stringify(delInfo)
-      const res = await this.$http.post('/microsign/api/com/entry/del', delInfo)
-      console.log(res)
       this.getEntylist()
     },
     // 获取对应入口的二维码图片
     async getPic (id) {
-    // 发请求 拿图片
-      const res = await this.$http.get(`/microsign/api/com/qrcode/${this.comid}/${id}`)
-      console.log(res)
+      // 发请求 拿图片
+      // const res = await this.$http.get(
+      //   `/microsign/api/com/qrcode/${this.comid}/${id}`
+      // )
+      // console.log(res)
+      let url = `/microsign/api/com/qrcode/${this.comid}/${id}`
+      this.$http
+        .get(url, { responseType: 'arraybuffer' })
+        .then(function (data) {
+          console.log(data)
+          this.imgUrl =
+            'data:image/png;base64,' +
+            btoa(
+              new Uint8Array(data.data).reduce(
+                (data, byte) => data + String.fromCharCode(byte),
+                ''
+              )
+            )
+          // 这里如果不清楚 new Uint8Array(data.data) 中data的指代，就看看最上面的那个图
+        })
+        .catch(function (err) {
+          console.error(err)
+        })
     }
   }
 }
 </script>
 
 <style lang='less' scoped>
-.el-row{
+.el-row {
   width: 100%;
-  height: 30px
+  height: 30px;
 }
 </style>
