@@ -129,13 +129,12 @@ export default {
   methods: {
     // 获取组织列表函数
     async getComlist () {
-      const res = await this.$http.get('http://localhost:3000/comlist')
-      console.log(res)
+      const res = await this.$http.get('/microsign/api/adm/comlist')
       this.tableData = res.data
     },
     // 获取组织详情
     async getComdetail () {
-      const res = await this.$http.get('http://localhost:3000/comdet')
+      const res = await this.$http.get('/microsign/api/adm/com')
       console.log(res)
       this.comdet = res.data
       this.comdetVis = true
@@ -150,16 +149,16 @@ export default {
       this.addDialogvisiable = true
     },
     addCompany () {
-      // this.$refs.addcomFormRef.validate(async valid => {
-      //   if (!valid) return
-      //   console.log(this.cominfo)
-      //   this.cominfo = JSON.stringify(this.cominfo)
-      //   const res = await this.$http.post('/microsign/api/adm/com', this.cominfo)
-      //   if (res.status !== 200) return this.$message.error('添加组织失败')
-      //   // 重新获取组织列表显示
-      //   this.addDialogvisiable = false
-      //   this.getComlist()
-      // })
+      this.$refs.addcomFormRef.validate(async valid => {
+        if (!valid) return
+        console.log(this.cominfo)
+        this.cominfo = JSON.stringify(this.cominfo)
+        const res = await this.$http.post('/microsign/api/adm/com', this.cominfo)
+        if (res.status !== 200) return this.$message.error('添加组织失败')
+        // 重新获取组织列表显示
+        this.addDialogvisiable = false
+        this.getComlist()
+      })
     },
     addialogClose () {
       this.$refs.addcomFormRef.resetFields()

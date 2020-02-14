@@ -48,7 +48,7 @@ export default {
       console.log(this.date.ts)
     },
     async getstats () {
-      const res = await this.$http.get(`http://localhost:3000/data?ts=${this.date.ts}`)
+      const res = await this.$http.get(`/microsign/api/adm/stats?ts=${this.date.ts}`)
       this.statsData = res.data
     }
   }
