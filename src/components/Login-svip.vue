@@ -85,11 +85,10 @@ export default {
       // this.$router.push('/home')
       this.$refs.loginFormRef.validate(async valid => {
         if (!valid) return
-        // const res = await this.$http.post('/microsign/api/adm/login', this.loginForm)
-        const res = await this.$http.get('http://localhost:3000/login', { params: this.loginForm })
+        const res = await this.$http.post('/microsign/api/adm/login', this.loginForm)
         console.log(res)
         // 错误码判断
-        // if (res.code !== 1) return this.$message.error('登陆失败')
+        if (res.status !== 200) return this.$message.error('登陆失败')
         this.$message.success('登陆成功')
         // 1.将登录成功之后的token,保存到客户端的sessionStorage中
         window.sessionStorage.setItem('token', res.data.token)
