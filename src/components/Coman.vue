@@ -7,55 +7,71 @@
     </el-row>
     <el-table :data="tableData" border style="width: 80%">
       <el-table-column prop="id" label="组织ID"></el-table-column>
-      <el-table-column prop="nm" label="组织名"></el-table-column>
+      <el-table-column prop="com_name" label="组织名"></el-table-column>
+      <el-table-column prop="login_name" label="登录名"></el-table-column>
+      <el-table-column label="管理类型">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.power_level === 1">普通管理员</el-tag>
+          <el-tag v-else>超级管理员</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button type="success" size="mini" @click="getComdetail(scope.row.id)">获取组织详情</el-button>
         </template>
       </el-table-column>
     </el-table>
+    <div style="width:80%">
+      <el-button-group style="float:right;margin-top:20px">
+        <el-button type="primary" icon="el-icon-arrow-left" @click="getPrepage">上一页</el-button>
+        <el-button type="primary" @click="getNexpage">
+          下一页
+          <i class="el-icon-arrow-right el-icon--right"></i>
+        </el-button>
+      </el-button-group>
+    </div>
     <!-- 组织详情模态框 -->
     <el-dialog title="组织详情" :visible.sync="comdetVis" width="40%" @close="comdeClose">
       <!-- 内容主体区域 -->
-        <el-card>
-          <el-row>
-            <el-col :span="6">
-              <el-tag type="primary" effect="dark">组织名称</el-tag>
-            </el-col>
-            <el-col :span="2">:</el-col>
-            <el-col :span="16">
-              <el-tag :model="this.comdet.n">{{this.comdet.n}}</el-tag>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="6">
-              <el-tag type="primary" effect="dark">组织类型</el-tag>
-            </el-col>
-            <el-col :span="2">:</el-col>
-            <el-col :span="16">
-              <el-tag :model="this.comdet.n">{{this.comdet.s ===0? "社区":"企业"}}</el-tag>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="6">
-              <el-tag type="primary" effect="dark">登录名称</el-tag>
-            </el-col>
-            <el-col :span="2">:</el-col>
-            <el-col :span="16">
-              <el-tag :model="this.comdet.n">{{this.comdet.u}}</el-tag>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="6">
-              <el-tag type="primary" effect="dark">注册时间</el-tag>
-            </el-col>
-            <el-col :span="2">:</el-col>
-            <el-col :span="16">
-              <el-tag :model="this.comdet.n">{{this.comdet.rt}}</el-tag>
-              <!-- <input type="text" disabled v-model="this.comdet.n" /> -->
-            </el-col>
-          </el-row>
-        </el-card>
+      <el-card>
+        <el-row>
+          <el-col :span="6">
+            <el-tag type="primary" effect="dark">组织名称</el-tag>
+          </el-col>
+          <el-col :span="2">:</el-col>
+          <el-col :span="16">
+            <el-tag :model="this.comdet.n">{{this.comdet.n}}</el-tag>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="6">
+            <el-tag type="primary" effect="dark">组织类型</el-tag>
+          </el-col>
+          <el-col :span="2">:</el-col>
+          <el-col :span="16">
+            <el-tag :model="this.comdet.n">{{this.comdet.s ===0? "社区":"企业"}}</el-tag>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="6">
+            <el-tag type="primary" effect="dark">登录名称</el-tag>
+          </el-col>
+          <el-col :span="2">:</el-col>
+          <el-col :span="16">
+            <el-tag :model="this.comdet.n">{{this.comdet.u}}</el-tag>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="6">
+            <el-tag type="primary" effect="dark">注册时间</el-tag>
+          </el-col>
+          <el-col :span="2">:</el-col>
+          <el-col :span="16">
+            <el-tag :model="this.comdet.n">{{this.comdet.rt}}</el-tag>
+            <!-- <input type="text" disabled v-model="this.comdet.n" /> -->
+          </el-col>
+        </el-row>
+      </el-card>
       <span slot="footer" class="dialog-footer">
         <el-button @click="comdeClose">关闭</el-button>
         <!-- 可加修改组织信息功能 -->
@@ -93,6 +109,12 @@
 export default {
   data () {
     return {
+      // 页码
+      num: 1,
+      // 是否有上一页
+      prePage: false,
+      // 是否有下一页
+      nextPage: false,
       tableData: [],
       // 组织详情对话框显示隐藏
       comdetVis: false,
@@ -108,7 +130,6 @@ export default {
         s: [{ required: true, message: '请选择组织类型', trigger: 'change' }],
         u: [{ required: true, message: '请输入用户登陆名', trigger: 'blur' }],
         p: [{ required: true, message: '请输入用户密码', trigger: 'blur' }]
-
       },
       options: [
         {
@@ -129,8 +150,30 @@ export default {
   methods: {
     // 获取组织列表函数
     async getComlist () {
-      const res = await this.$http.get('/microsign/api/adm/comlist')
-      this.tableData = res.data
+      const res = await this.$http.get(
+        `/microsign/api/adm/comlist?num=${this.num}&size=20`
+      )
+      this.prePage = res.data.hasPreviousPage
+      this.nextPage = res.data.hasNextPage
+      this.tableData = res.data.list
+    },
+    // 点击上一页
+    getPrepage () {
+      if (this.prePage) {
+        this.num = this.num - 1
+        this.getComlist()
+      } else {
+        this.$message.warning('没有上一页了')
+      }
+    },
+    // 点击跳转下一页
+    getNexpage () {
+      if (this.nextPage) {
+        this.num = this.num + 1
+        this.getComlist()
+      } else {
+        this.$message.warning('没有数据了哦')
+      }
     },
     // 获取组织详情
     async getComdetail () {
@@ -153,7 +196,10 @@ export default {
         if (!valid) return
         console.log(this.cominfo)
         this.cominfo = JSON.stringify(this.cominfo)
-        const res = await this.$http.post('/microsign/api/adm/com', this.cominfo)
+        const res = await this.$http.post(
+          '/microsign/api/adm/com',
+          this.cominfo
+        )
         if (res.status !== 200) return this.$message.error('添加组织失败')
         // 重新获取组织列表显示
         this.addDialogvisiable = false

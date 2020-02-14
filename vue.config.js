@@ -6,14 +6,31 @@ module.exports = {
     https: false,
     proxy: {
       // 配置跨域
-      '/api': {
-        target: 'http://zhiquwl.com/microsign/api/',
+      '/microsign/api/push': {
+        target: 'http://zhiquwl.com',
         ws: true,
         changOrigin: true,
         pathRewrite: {
-          '^/api': '/'
+          '^/microsign/api/push': '/microsign/api/push'
+        }
+      },
+      '/microsign/api/adm': {
+        target: 'http://zhiqv.ngrok2.xiaomiqiu.cn',
+        ws: true,
+        changOrigin: true,
+        pathRewrite: {
+          '^/microsign/api/adm': '/microsign/api/adm'
+        }
+      },
+      '/microsign/api/com': {
+        target: 'http://zhiquwl.com',
+        ws: true,
+        changOrigin: true,
+        pathRewrite: {
+          '^/microsign/api/com': '/microsign/api/com'
         }
       }
+
     }
   }
 }

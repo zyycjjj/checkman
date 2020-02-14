@@ -78,8 +78,7 @@ router.beforeEach((to, from, next) => {
   // to 将要访问的路径
   // from 从那个路径跳转过来
   // next 是一个函数 表示放行
-  if (to.path === '/login') return next()
-  if (to.path === '/login-svip') return next()
+  if (to.path === '/login' || to.path === '/login-svip') return next()
   // 先获取token
   const tokenStr = window.sessionStorage.getItem('token')
   if (!tokenStr) return next('/login')

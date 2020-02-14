@@ -20,11 +20,7 @@
         </el-form-item>
         <!-- 密码 -->
         <el-form-item prop="p">
-          <el-input
-            type="password"
-            v-model="loginForm.p"
-            prefix-icon="iconfont icon-showpassword"
-          ></el-input>
+          <el-input type="password" v-model="loginForm.p" prefix-icon="iconfont icon-showpassword"></el-input>
         </el-form-item>
         <!-- 按钮区域 -->
         <el-form-item class="btns">
@@ -35,7 +31,7 @@
     </div>
     <!-- 超级管理员登录页面跳转 -->
     <div class="svip_login">
-      <el-button size='mini' type='success' @click='gotoVip'>点击跳转到小区管理员登陆</el-button>
+      <el-button size="mini" type="success" @click="gotoVip">点击跳转到小区管理员登陆</el-button>
     </div>
   </div>
 </template>
@@ -85,7 +81,13 @@ export default {
       // this.$router.push('/home')
       this.$refs.loginFormRef.validate(async valid => {
         if (!valid) return
-        const res = await this.$http.post('/microsign/api/adm/login', this.loginForm)
+        const p = this.$md5(this.loginForm.p)
+        console.log(p)
+        this.loginForm.p = p
+        const res = await this.$http.post(
+          '/microsign/api/adm/login',
+          this.loginForm
+        )
         console.log(res)
         // 错误码判断
         if (res.status !== 200) return this.$message.error('登陆失败')
@@ -153,7 +155,7 @@ export default {
   display: flex;
   justify-content: flex-end;
 }
-.svip_login{
+.svip_login {
   position: absolute;
   bottom: 0;
   right: 0;

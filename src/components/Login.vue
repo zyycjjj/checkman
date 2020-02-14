@@ -65,8 +65,7 @@ export default {
         ],
         // 验证密码是否合法
         p: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
-          { min: 6, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur' }
+          { required: true, message: '请输入密码', trigger: 'blur' }
         ]
       }
     }
@@ -78,6 +77,10 @@ export default {
     login () {
       this.$refs.loginFormRef.validate(async valid => {
         if (!valid) return
+        const p = this.$md5(this.loginForm.p)
+        console.log(p)
+        this.loginForm.p = p
+        console.log(this.loginForm)
         const res = await this.$http.post(
           '/microsign/api/com/login',
           this.loginForm

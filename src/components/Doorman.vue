@@ -11,36 +11,45 @@
         >点击增加入口</el-button>
       </el-col>
     </el-row>
-    <el-table :data="DoorData" border style="width: 100%">
-      <el-table-column prop="name" label="大门" width="300"></el-table-column>
-      <el-table-column prop label="操作">
-        <template slot-scope="scope">
-          <!-- 修改按钮 -->
-          <el-button
-            type="primary"
-            icon="el-icon-edit"
-            size="mini"
-            @click="changeEntyVis(scope.row)"
-          >修改</el-button>
-          <!-- 删除按钮 -->
-          <el-button
-            type="danger"
-            icon="el-icon-delete"
-            size="mini"
-            @click="delEnty(scope.row.id)"
-          >删除</el-button>
-          <el-tooltip effect="dark" content="获取二维码" placement="top" :enterable="false">
+    <div class="info">
+      <el-table :data="DoorData" border style="width: 60%">
+        <el-table-column prop="name" label="大门" width="100"></el-table-column>
+        <el-table-column prop label="操作">
+          <template slot-scope="scope">
+            <!-- 修改按钮 -->
             <el-button
-              type="warning"
-              icon="el-icon-setting"
+              type="primary"
+              icon="el-icon-edit"
               size="mini"
-              @click="getPic(scope.row.id)"
-            >获取出入口二维码</el-button>
-          </el-tooltip>
-        </template>
-      </el-table-column>
-    </el-table>
-
+              @click="changeEntyVis(scope.row)"
+            >修改</el-button>
+            <!-- 删除按钮 -->
+            <el-button
+              type="danger"
+              icon="el-icon-delete"
+              size="mini"
+              @click="delEnty(scope.row.id)"
+            >删除</el-button>
+            <el-tooltip effect="dark" content="获取出口二维码" placement="top" :enterable="false">
+              <el-button
+                type="warning"
+                icon="el-icon-setting"
+                size="mini"
+                @click="getPicout(scope.row.id)"
+              >获取出口二维码</el-button>
+            </el-tooltip>
+            <el-tooltip effect="dark" content="获取入口二维码" placement="top" :enterable="false">
+              <el-button
+                type="warning"
+                icon="el-icon-setting"
+                size="mini"
+                @click="getPicin(scope.row.id)"
+              >获取入口二维码</el-button>
+            </el-tooltip>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
     <!-- 添加入口对话框模态框 -->
     <el-dialog title="添加入口" :visible.sync="addDialogvisiable" width="50%" @close="addialogClose">
       <!-- 内容主体区域 -->
@@ -73,8 +82,16 @@
       </span>
     </el-dialog>
     <!-- 展示图片 -->
-    <el-dialog title="门禁二维码" :visible.sync='imgVisable' width="25%" @close='imgdialogClose'>
-      <img :src="imgUrl" class="ewm" alt="">
+    <el-dialog
+      class="imgDia"
+      title="门禁二维码"
+      :visible.sync="imgVisable"
+      width="300px"
+      @close="this.imgVisable = !this.imgVisable"
+    >
+      <div>
+        <img :src="imgUrl" class="ewm" alt />
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -113,7 +130,7 @@ export default {
       // 修改的入口信息传参
       changeData: {},
       // 后端返回图片后做的转换
-      imgUrl: '',
+      imgUrl: '../assets/logo.png',
       // 二维码对话框
       imgVisable: false
     }
@@ -126,7 +143,7 @@ export default {
   methods: {
     // 获取当前小区id
     getcomid () {
-      this.comid = window.sessionStorage.getItem('comid')
+      this.comid = window.sessionStorage.getItem('groupid')
     },
     // 获取入口列表
     getEntylist () {
@@ -141,9 +158,9 @@ export default {
     },
     addEnty () {
       // 发请求增加入口 注意参数
-      this.addDate = {
+      this.addData = {
         n: this.entrytip.n,
-        comid: this.comid
+        groupid: Number(this.comid)
       }
       // this.addData = JSON.stringify(addDate)
       this.$refs.addFormRef.validate(async valid => {
@@ -151,17 +168,19 @@ export default {
           '/microsign/api/com/entry',
           this.addData
         )
-        console.log(res)
         if (res.status !== 200) return this.$message.warning('添加失败')
         // 重新调用获取入口列表的函数
-        this.getEntylist()
+        this.DoorData.push({
+          id: res.data.id,
+          name: this.entrytip.n
+        })
         this.addDialogvisiable = false
       })
     },
     changeEnty () {
       const changeDate = {
-        id: this.id,
-        comid: this.comid,
+        id: this.entyinfo.id,
+        groupid: Number(this.comid),
         n: this.entyinfo.name
       }
       this.changeData = JSON.stringify(changeDate)
@@ -170,15 +189,26 @@ export default {
           '/microsign/api/com/entry',
           this.changeData
         )
-        if (res.status !== 200) return this.$message.warning('修改失败')
-        this.getEntylist()
+        console.log(res)
+        if (res.status !== 200) {
+          this.changeDialogvisiable = false
+          this.$message.warning('修改失败')
+          return false
+        }
+        this.DoorData = this.DoorData.map(item => {
+          if (item.id === this.entyinfo.id) {
+            item.name = this.entyinfo.name
+          }
+        })
+        this.id = res.data.id
+        this.changeDialogvisiable = !this.changeDialogvisiable
+        console.log('这是', this.changeDialogvisiable)
         this.$message.success('修改成功')
-        this.changeDialogvisiable = false
       })
     },
     changeEntyVis (info) {
       this.entyinfo = info
-      this.id = info.id
+      // this.id = info.id
       this.changeDialogvisiable = true
     },
     async delEnty (id) {
@@ -194,7 +224,8 @@ export default {
       if (resConfirm === 'confirm') {
         // 发请求删除,重新获取入口列表
         let delInfo = {
-          id: id
+          id: id,
+          groupid: Number(this.comid)
         }
         console.log(delInfo)
         // delInfo = JSON.stringify(delInfo)
@@ -203,37 +234,38 @@ export default {
           delInfo
         )
         if (res.status !== 200) return this.$message.error('删除失败')
+        const DoorData1 = []
+        this.DoorData.map(item => {
+          if (item.id !== id) {
+            DoorData1.push(item)
+          }
+        })
+        this.DoorData = DoorData1
         this.$message.success('删除成功')
       } else {
         this.$message.info('取消删除操作')
       }
-      this.getEntylist()
     },
     // 获取对应入口的二维码图片
-    async getPic (id) {
+    async getPicout (id) {
+      this.imgVisable = !this.imgVisable
+      this.imgUrl = '../assets/logo.png'
+      let outurl = `http://localhost:8081/microsign/api/com/qrcode/${this.comid}/${id}/0`
+      this.imgUrl = outurl
+      const res = await this.$http.get(outurl)
+      this.res.imgUrl = res.data
+    },
+    async getPicin (id) {
       // 发请求 拿图片
       // const res = await this.$http.get(
       //   `/microsign/api/com/qrcode/${this.comid}/${id}`
       // )
       // console.log(res)
-      let url = `/microsign/api/com/qrcode/${this.comid}/${id}`
-      this.$http
-        .get(url, { responseType: 'arraybuffer' })
-        .then(function (data) {
-          console.log(data)
-          this.imgUrl =
-            'data:image/png;base64,' +
-            btoa(
-              new Uint8Array(data.data).reduce(
-                (data, byte) => data + String.fromCharCode(byte),
-                ''
-              )
-            )
-          // 这里如果不清楚 new Uint8Array(data.data) 中data的指代，就看看最上面的那个图
-        })
-        .catch(function (err) {
-          console.error(err)
-        })
+      this.imgVisable = !this.imgVisable
+      let inurl = `http://localhost:8081/microsign/api/com/qrcode/${Number(this.comid)}/${id}/1`
+      const res = await this.$http.get(inurl)
+      console.log(res)
+      this.imgUrl = inurl
     }
   }
 }
@@ -243,5 +275,26 @@ export default {
 .el-row {
   width: 100%;
   height: 30px;
+}
+.imgDia {
+  img {
+    padding-left: 20px;
+    width: 200px;
+    height: 200px;
+  }
+  .el-dialog__body {
+    height: 190px;
+  }
+}
+.el-dialog__body {
+  height: 300px;
+}
+.info{
+  position: relative;
+  img{
+    position: absolute;
+    right: 0px;
+    top: 0px;
+  }
 }
 </style>

@@ -76,7 +76,7 @@ export default {
     }
   },
   created () {
-    this.comid = window.sessionStorage.getItem('comid')
+    this.comid = window.sessionStorage.getItem('groupid')
     // 获取用户列表
     // 默认获取第一页
     this.getUserList()
@@ -84,11 +84,7 @@ export default {
   methods: {
     // 获取用户列表
     async getUserList () {
-      // // 模拟数据测试代码
-      // const res = await this.$http.get('http://localhost:3000/userlist')
-      // this.userList = res.data
-      // console.log(res.data)
-      this.ulistData = { comid: this.comid }
+      this.ulistData = { groupid: Number(this.comid) }
       // this.ulistData = JSON.stringify(this.ulistData)
       const res = await this.$http.post(
         '/microsign/api/com/userlist',

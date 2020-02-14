@@ -121,7 +121,11 @@ export default {
     },
     // 获取出入人数
     async getPeo () {
-      const res = await this.$http.get(`/microsign/api/com/stats`, this.date)
+      const para = {
+        id: Number(this.comid),
+        ts: this.date.ts
+      }
+      const res = await this.$http.post(`/microsign/api/com/stats`, para)
       // 把返回的json对象push到数组里.方便表格展示
       this.data1.push(res.data)
       // 将处理完的数据赋给数量展示的表格绑定的对象
@@ -136,26 +140,20 @@ export default {
       this.inoutData = res.data
     },
     // 导出为excel
-    excel () {
-      this.$http.post('/microsign/api/com/output', this.date, { responseType: 'arraybuffer' }).then((_res) => {
-        const blob = new Blob([_res.data], { type: 'application/vnd.ms-excel;' })
-        const a = document.createElement('a')
-        // 生成文件路径
-        const href = window.URL.createObjectURL(blob)
-        a.href = href
-        const _fileName = _res.headers['content-disposition'].split(';')[1].split('=')[1].split('.')[0]
-        // 文件名中有中文 则对文件名进行转码
-        a.download = decodeURIComponent(_fileName)
-        // 利用a标签做下载
-        document.body.appendChild(a)
-        a.click()
-        document.body.removeChild(a)
-        window.URL.revokeObjectURL(href)
-      })
+    async excel () {
+      const exParam = {
+        groupid: Number(this.comid)
+      }
+      const res = await this.$http.post(`/microsign/api/com/output`, exParam)
+      console.log(res)
     },
     // 获取用户详细信息
-    async getUdetail () {
-      const res = await this.$http.get('http://localhost:3000/user')
+    async getUdetail (id) {
+      const ude = {
+        uid: id,
+        groupid: this.comid
+      }
+      const res = await this.$http.post('/microsign/api/com/user', ude)
       this.userDetail.push(res.data)
       this.userDetailVis = true
       console.log(res)
