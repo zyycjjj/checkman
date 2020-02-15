@@ -36,9 +36,6 @@ export default {
           this.sign_out++
         })
       })
-      .catch(err => {
-        console.error('Failed to connect to server', err)
-      })
   },
   beforeDestroy () {
     msgServer.close()

@@ -81,7 +81,6 @@ export default {
       this.$refs.loginFormRef.validate(async valid => {
         if (!valid) return
         // const p = this.$md5(this.loginForm.p)
-        // console.log(p)
         // this.loginForm.p = p
         const params = {
           u: this.loginForm.u,
@@ -91,7 +90,6 @@ export default {
           '/microsign/api/adm/login',
           params
         )
-        console.log(res)
         // 错误码判断
         if (res.status !== 200) return this.$message.error('登陆失败')
         this.$message.success('登陆成功')

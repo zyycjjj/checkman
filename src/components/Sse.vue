@@ -44,11 +44,6 @@ export default {
           this.sign_out++
         })
       })
-      .catch(err => {
-        // When this error is caught, it means the initial connection to the
-        // events server failed.  No automatic attempts to reconnect will be made.
-        console.error('Failed to connect to server', err)
-      })
   },
   beforeDestroy () {
     msgServer.close()

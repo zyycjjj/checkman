@@ -41,14 +41,11 @@ export default {
   },
   methods: {
     onSubmit () {
-      // console.log('submit!')
       // 处理选择的日期的格式,修改date数据
       // 调用获取查询方法
       this.getstats()
-      console.log(this.date.ts)
     },
     async getstats () {
-      console.log(this.date.ts)
       const res = await this.$http.get(`/microsign/api/adm/stats?ts=${this.date.ts}`)
       this.statsData = res.data
     }

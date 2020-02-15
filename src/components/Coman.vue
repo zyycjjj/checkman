@@ -187,7 +187,6 @@ export default {
           size: 10
         }
       )
-      console.log(res)
       this.prePage = res.data.hasPreviousPage
       this.nextPage = res.data.hasNextPage
       this.tableData = res.data.list
@@ -212,11 +211,7 @@ export default {
     },
     // 获取组织详情
     async getComdetail (row) {
-      console.log(row)
       this.comdet = row
-      // const res = await this.$http.post('/microsign/api/adm/com')
-      // console.log(res)
-      // this.comdet = res.data
       this.comdetVis = true
     },
     // 监听组织详情对话框关闭事件
@@ -231,7 +226,6 @@ export default {
     addCompany () {
       this.$refs.addcomFormRef.validate(async valid => {
         if (!valid) return
-        console.log(this.cominfo)
         // this.cominfo = JSON.stringify(this.cominfo)
         const res = await this.$http.post(
           '/microsign/api/adm/com',
@@ -260,7 +254,6 @@ export default {
         p: this.editInfo.p,
         id: this.editInfo.id
       })
-      console.log(res)
       // if (res.r !== 0) return this.$message.warning('修改信息失败')
       this.$message.success('修改信息成功')
       this.editInfoVis = !this.editInfoVis

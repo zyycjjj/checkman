@@ -91,14 +91,12 @@ export default {
         this.ulistData
       )
       this.userList = res.data
-      console.log(res)
     },
     // 获取用户跟踪数据
     async getOwn (id) {
       const param = { groupid: Number(this.comid), uid: id }
       const res = await this.$http.post('/microsign/api/com/trace', param)
       this.userDetail = res.data
-      console.log(res)
       // 展示模态框
       this.userDetailVis = true
     },

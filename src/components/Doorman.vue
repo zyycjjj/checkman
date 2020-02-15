@@ -149,7 +149,6 @@ export default {
     getEntylist () {
       // 从sessionStorage中获取,并修改格式
       this.DoorData = JSON.parse(window.sessionStorage.getItem('entry_list'))
-      console.log('获取入口列表成功')
     },
     // 监听添加入口对话框关闭事件
     addialogClose () {
@@ -189,7 +188,6 @@ export default {
           '/microsign/api/com/entry',
           this.changeData
         )
-        console.log(res)
         if (res.status !== 200) {
           this.changeDialogvisiable = false
           this.$message.warning('修改失败')
@@ -203,7 +201,6 @@ export default {
         })
         window.sessionStorage.setItem('entry_list', JSON.stringify(this.DoorData))
         this.id = res.data.id
-        console.log('这是', this.changeDialogvisiable)
         this.$message.success('修改成功')
       })
     },
@@ -228,7 +225,6 @@ export default {
           id: id,
           groupid: Number(this.comid)
         }
-        console.log(delInfo)
         // delInfo = JSON.stringify(delInfo)
         const res = await this.$http.post(
           '/microsign/api/com/entry/del',

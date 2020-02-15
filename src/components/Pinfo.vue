@@ -112,10 +112,8 @@ export default {
   },
   methods: {
     onSubmit () {
-      // console.log('submit!')
       // 处理选择的日期的格式,已修改为20200202的格式,使用moment插件,修改date数据
       // 调用获取查询方法
-      // console.log(this.date.ts)
       this.getPeo()
     },
     getcomid () {
@@ -127,7 +125,6 @@ export default {
         id: Number(this.comid),
         ts: this.date.ts
       }
-      console.log(para)
       const res = await this.$http.post(`/microsign/api/com/stat`, para)
       // 把返回的json对象push到数组里.方便表格展示
       this.data1.push(res.data)
@@ -148,7 +145,6 @@ export default {
         groupid: Number(this.comid)
       }
       const res = await this.$http.post(`/microsign/api/com/output`, exParam, { responseType: 'blob' })
-      console.log(res)
       let blob = res.data
       const reader = new FileReader()
       reader.readAsDataURL(blob) // 转换为base64，可以直接放入a标签href
@@ -173,7 +169,6 @@ export default {
       const res = await this.$http.post('/microsign/api/com/user', ude)
       this.userDetail.push(res.data)
       this.userDetailVis = true
-      console.log(res)
     },
     // 监听用户详情信息关闭情况
     userDetailClose () {

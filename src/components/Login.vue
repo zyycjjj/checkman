@@ -78,9 +78,7 @@ export default {
       this.$refs.loginFormRef.validate(async valid => {
         if (!valid) return
         const p = this.$md5(this.loginForm.p)
-        console.log(p)
         this.loginForm.p = p
-        console.log(this.loginForm)
         const res = await this.$http.post(
           '/microsign/api/com/login',
           this.loginForm
