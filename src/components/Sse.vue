@@ -3,47 +3,37 @@
     <h1>动态显示</h1>
     <div>签入人数{{ sign_in  }}</div>
     <div>签出人数{{ sign_out  }}</div>
+
+    <h4 class="red" v-if="alert_code==1">非本小区人员报警 </h4>
+    <h4 class="red" v-if="alert_code==2">疑似感染者报警 </h4>
+    <h4 class="red" v-if="alert_code==3">非本小区且疑似感染者报警 </h4>
+    <p>    建议有一个醒目的提醒，几秒钟后自动消除</p>
   </div>
 </template>
 <script>
 let msgServer
 export default {
 
-  data () {
-    return {
-      sign_in: 0,
-      sign_out: 0
-    }
+  props: {
+    sign_in: Number,
+    sign_out: Number,
+    alert_code: Number
+  },
+  created () {
+    this.sign_in = 0
+    this.sign_out = 0
+    this.alert_code = 0
   },
   mounted () {
     this.$sse('/microsign/api/push/group/' + window.sessionStorage.getItem('groupid'), { format: 'json' })
       .then(sse => {
-        // Store SSE object at a higher scope
         msgServer = sse
-
-        // Catch any errors (ie. lost connections, etc.)
         sse.onError(e => {
-          console.error('lost connection; giving up!', e)
 
-          // This is purely for example; EventSource will automatically
-          // attempt to reconnect indefinitely, with no action needed
-          // on your part to resubscribe to events once (if) reconnected
-          sse.close()
         })
 
-        // Listen for messages without a specified event
         sse.subscribe('alert', (message, rawEvent) => {
-          switch (message.code) {
-            case 1:
-              alert('你给我站住!不是这个小区的人')
-              break
-            case 2:
-              alert('你给我站住!你有病')
-              break
-            case 3:
-              alert('你给我站住!你不是这个小区的，你有病')
-              break
-          }
+          this.alert_code = message.code
         })
 
         sse.subscribe('sign_in', (message, rawEvent) => {

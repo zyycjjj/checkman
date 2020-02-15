@@ -10,8 +10,8 @@
   "dependencies": {
     "axios": "^0.19.0",
     "core-js": "^3.3.2",
-    "echarts": "^4.6.0",
     "element-ui": "^2.4.5",
+    "file-reader": "^1.1.1",
     "js-md5": "^0.7.3",
     "moment": "^2.24.0",
     "nprogress": "^0.2.0",
