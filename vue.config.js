@@ -15,8 +15,9 @@ module.exports = {
         }
       },
       '/microsign/api/adm': {
-        target: 'http://zhiquwl.com',
-        // target: 'http://zhiqv.ngrok2.xiaomiqiu.cn',
+        // target: 'http://zhiquwl.com',
+        target: 'http://zhiqv.ngrok2.xiaomiqiu.cn',
+        // http://zhiqv.ngrok2.xiaomiqiu.cn/microsign
         ws: true,
         changOrigin: true,
         pathRewrite: {

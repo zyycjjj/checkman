@@ -10,7 +10,7 @@ import Loginsvip from '../components/Login-svip.vue'
 import Homesvip from '../components/Home-SVIP.vue'
 import Coman from '../components/Coman.vue'
 import Data from '../components/Data.vue'
-import Welcomevip from '../components/Welcomevip.vue'
+import Welcomevip from '../components/Svipsse.vue'
 Vue.use(VueRouter)
 
 const routes = [{
@@ -51,11 +51,11 @@ const routes = [{
 {
   path: '/home-svip',
   component: Homesvip,
-  redirect: '/welcome-svip',
+  redirect: '/welcomesvip',
   children: [
     {
-      path: '/welcome-svip',
-      comnent: Welcomevip
+      path: '/welcomesvip',
+      component: Welcomevip
     },
     {
       path: '/coman',
