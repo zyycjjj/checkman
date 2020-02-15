@@ -5,8 +5,8 @@
     <div>签出人数{{ sign_out  }}</div>
 
     <h4 class="red" v-if="alert_code==1">非本小区人员报警 </h4>
-    <h4 class="red" v-if="alert_code==2">疑似感染者报警 </h4>
-    <h4 class="red" v-if="alert_code==3">非本小区且疑似感染者报警 </h4>
+    <h4 class="red" v-else-if="alert_code==2">疑似感染者报警 </h4>
+    <h4 class="red" v-else-if="alert_code==3">非本小区且疑似感染者报警 </h4>
     <p>    建议有一个醒目的提醒，几秒钟后自动消除</p>
   </div>
 </template>

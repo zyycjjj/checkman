@@ -32,6 +32,10 @@
             <i class="el-icon-menu"></i>
             <span slot="title">数据统计</span>
           </el-menu-item>
+          <el-menu-item index="/welcomesvip">
+            <i class="el-icon-menu"></i>
+            <span slot="title">实时数据</span>
+          </el-menu-item>
         </el-menu>
       </el-aside>
       <!-- 主体区域 -->

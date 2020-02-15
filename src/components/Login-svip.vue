@@ -97,6 +97,7 @@ export default {
         this.$message.success('登陆成功')
         // 1.将登录成功之后的token,保存到客户端的sessionStorage中
         window.sessionStorage.setItem('token', res.data.token)
+        window.sessionStorage.setItem('groupid', res.data.groupid)
         //   1.1 项目中除了登陆之外的其他API接口,必须登陆后
         //   1.2 token 之应该在当前网站打开期间生效,所以将token保存在sessionStorage中
         // 2.通过编程式导航跳转到后台主页,路由地址是/home

@@ -19,7 +19,7 @@
       </el-form-item>
     </el-form>
     <el-table stripe border :data="statsData" style="width: 50%">
-      <el-table-column prop="group_name" label="组织名称" width="180"></el-table-column>
+      <el-table-column prop="com_name" label="组织名称" width="180"></el-table-column>
       <el-table-column prop="sign_out" label="签出数量" width="180"></el-table-column>
       <el-table-column prop="sign_in" label="签入数量"></el-table-column>
     </el-table>
@@ -48,6 +48,7 @@ export default {
       console.log(this.date.ts)
     },
     async getstats () {
+      console.log(this.date.ts)
       const res = await this.$http.get(`/microsign/api/adm/stats?ts=${this.date.ts}`)
       this.statsData = res.data
     }

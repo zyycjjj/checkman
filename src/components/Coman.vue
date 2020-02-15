@@ -5,11 +5,11 @@
         <el-button type="warning" @click="addCom">添加组织(管理账号)</el-button>
       </el-col>
     </el-row>
-    <el-table :data="tableData" border style="width: 80%">
-      <el-table-column prop="id" label="组织ID"></el-table-column>
-      <el-table-column prop="com_name" label="组织名"></el-table-column>
-      <el-table-column prop="login_name" label="登录名"></el-table-column>
-      <el-table-column label="管理类型">
+    <el-table :data="tableData" border style="width:80%">
+      <el-table-column prop="id" label="组织ID" width="100"></el-table-column>
+      <el-table-column prop="com_name" label="组织名" width="150"></el-table-column>
+      <el-table-column prop="login_name" label="登录名" width="150"></el-table-column>
+      <el-table-column label="管理类型" width="150">
         <template slot-scope="scope">
           <el-tag v-if="scope.power_level === 1">普通管理员</el-tag>
           <el-tag v-else>超级管理员</el-tag>
@@ -17,7 +17,8 @@
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button type="success" size="mini" @click="getComdetail(scope.row.id)">获取组织详情</el-button>
+          <el-button type="success" size="mini" @click="getComdetail(scope.row)">获取组织详情</el-button>
+          <el-button type="success" size="mini" @click="changeP(scope.row)">修改密码</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -40,7 +41,7 @@
           </el-col>
           <el-col :span="2">:</el-col>
           <el-col :span="16">
-            <el-tag :model="this.comdet.n">{{this.comdet.n}}</el-tag>
+            <el-tag :model="this.comdet.n">{{this.comdet.com_name}}</el-tag>
           </el-col>
         </el-row>
         <el-row>
@@ -58,7 +59,7 @@
           </el-col>
           <el-col :span="2">:</el-col>
           <el-col :span="16">
-            <el-tag :model="this.comdet.n">{{this.comdet.u}}</el-tag>
+            <el-tag :model="this.comdet.login_name">{{this.comdet.login_name}}</el-tag>
           </el-col>
         </el-row>
         <el-row>
@@ -67,7 +68,7 @@
           </el-col>
           <el-col :span="2">:</el-col>
           <el-col :span="16">
-            <el-tag :model="this.comdet.n">{{this.comdet.rt}}</el-tag>
+            <el-tag :model="this.comdet.reg_datetime">{{this.comdet.reg_datetime}}</el-tag>
             <!-- <input type="text" disabled v-model="this.comdet.n" /> -->
           </el-col>
         </el-row>
@@ -102,6 +103,25 @@
         <el-button type="primary" @click="addCompany">确 定</el-button>
       </span>
     </el-dialog>
+      <!-- 修改信息 -->
+    <el-dialog title="修改信息" :visible.sync="editInfoVis" width="40%" @close="editClose">
+      <!-- 内容主体区域 -->
+      <el-form ref="editcomFormRef" :model="editInfo" :rules="editFormRules" label-width="100px">
+        <el-form-item label="组织名称" prop="n">
+          <el-input v-model="editInfo.n" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="登录名" prop="u">
+          <el-input v-model="editInfo.u" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="p">
+          <el-input v-model="editInfo.p"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editClose">取 消</el-button>
+        <el-button type="primary" @click="editCompany">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -109,6 +129,16 @@
 export default {
   data () {
     return {
+      // 修改信息对话框的显示隐藏
+      editInfoVis: false,
+      // 修改信息的绑定数据
+      editInfo: {
+        n: '',
+        s: '',
+        u: '',
+        p: '',
+        id: ''
+      },
       // 页码
       num: 1,
       // 是否有上一页
@@ -150,9 +180,14 @@ export default {
   methods: {
     // 获取组织列表函数
     async getComlist () {
-      const res = await this.$http.get(
-        `/microsign/api/adm/comlist?num=${this.num}&size=20`
+      const res = await this.$http.post(
+        `/microsign/api/adm/comlist`,
+        {
+          num: this.num,
+          size: 10
+        }
       )
+      console.log(res)
       this.prePage = res.data.hasPreviousPage
       this.nextPage = res.data.hasNextPage
       this.tableData = res.data.list
@@ -176,10 +211,12 @@ export default {
       }
     },
     // 获取组织详情
-    async getComdetail () {
-      const res = await this.$http.get('/microsign/api/adm/com')
-      console.log(res)
-      this.comdet = res.data
+    async getComdetail (row) {
+      console.log(row)
+      this.comdet = row
+      // const res = await this.$http.post('/microsign/api/adm/com')
+      // console.log(res)
+      // this.comdet = res.data
       this.comdetVis = true
     },
     // 监听组织详情对话框关闭事件
@@ -195,20 +232,38 @@ export default {
       this.$refs.addcomFormRef.validate(async valid => {
         if (!valid) return
         console.log(this.cominfo)
-        this.cominfo = JSON.stringify(this.cominfo)
+        // this.cominfo = JSON.stringify(this.cominfo)
         const res = await this.$http.post(
           '/microsign/api/adm/com',
           this.cominfo
         )
         if (res.status !== 200) return this.$message.error('添加组织失败')
         // 重新获取组织列表显示
-        this.addDialogvisiable = false
+        this.addDialogvisiable = !this.addDialogvisiable
         this.getComlist()
       })
     },
     addialogClose () {
       this.$refs.addcomFormRef.resetFields()
       this.addDialogvisiable = false
+    },
+    // 点击修改信息
+    changeP (row) {
+      this.editInfo.n = row.com_name
+      this.editInfo.id = row.id
+      this.editInfo.u = row.login_name
+      this.editInfoVis = !this.editInfoVis
+    },
+    // 确认修改信息
+    async editCompany () {
+      const res = this.$http.post(`/microsign/api/adm/com`, {
+        p: this.editInfo.p,
+        id: this.editInfo.id
+      })
+      console.log(res)
+      // if (res.r !== 0) return this.$message.warning('修改信息失败')
+      this.$message.success('修改信息成功')
+      this.editInfoVis = !this.editInfoVis
     }
   }
 }
