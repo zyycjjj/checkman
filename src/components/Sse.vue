@@ -31,16 +31,19 @@ export default {
         sse.onError(e => {
 
         })
-
+        sse.subscribe('', (message, rawEvent) => {
+          console.warn('Received a message w/o an event!', data)
+        })
         sse.subscribe('alert', (message, rawEvent) => {
           this.alert_code = message.code
         })
 
         sse.subscribe('sign_in', (message, rawEvent) => {
+          console.log('sign_in')
           this.sign_in++
         })
 
-        sse.subscribe('sign_in', (message, rawEvent) => {
+        sse.subscribe('sign_out', (message, rawEvent) => {
           this.sign_out++
         })
       })

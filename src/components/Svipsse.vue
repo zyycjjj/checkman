@@ -32,7 +32,7 @@ export default {
           this.sign_in++
         })
 
-        sse.subscribe('sign_in', (message, rawEvent) => {
+        sse.subscribe('sign_out', (message, rawEvent) => {
           this.sign_out++
         })
       })
