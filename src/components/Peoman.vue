@@ -24,6 +24,12 @@
             size="mini"
             @click="getOwn(scope.row.uid)"
           >获取出入数据详情</el-button>
+          <el-button
+            type="warning"
+            icon="el-icon-delete"
+            size="mini"
+            @click="delPeo(scope.row.uid)"
+          >删除用户</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -103,6 +109,34 @@ export default {
     // 对话框关闭
     userDetailClose () {
       this.userDetailVis = false
+    },
+    // 删除用户
+    delPeo (id) {
+      this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+        confirmButtonText: '删除',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          const params = {
+            groupid: Number(this.comid),
+            uid: id
+          }
+          const res = this.$http.post(`/microsign/api/com/userdel`, params)
+          if (res.status !== 200) {
+            return this.$message.warning('删除失败')
+          }
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
     }
   }
 }
