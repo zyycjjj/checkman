@@ -122,10 +122,11 @@ export default {
             groupid: Number(this.comid),
             uid: id
           }
-          const res = this.$http.post(`/microsign/api/com/userdel`, params)
-          if (res.status !== 200) {
-            return this.$message.warning('删除失败')
-          }
+          // const res =
+          this.$http.post(`/microsign/api/com/userdel`, params)
+          // if (res.status !== 200) {
+          //   return this.$message.warning('删除失败')
+          // }
           this.$message({
             type: 'success',
             message: '删除成功!'
