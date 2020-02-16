@@ -24,29 +24,34 @@ export default {
     this.sign_out = 0
     this.alert_code = 0
   },
+  methods: {
+
+    ssereg () {
+      this.$sse('/microsign/api/push/group/' + window.sessionStorage.getItem('groupid'), { format: 'json' })
+        .then(sse => {
+          msgServer = sse
+
+          sse.onError(e => {
+            this.ssereg()
+          })
+          // Listen for messages without a specified event
+
+          sse.subscribe('sign_in', (message, rawEvent) => {
+            this.sign_in++
+          })
+
+          sse.subscribe('sign_out', (message, rawEvent) => {
+            this.sign_out++
+          })
+
+          sse.subscribe('alert', (message, rawEvent) => {
+            this.alert_code = message.code
+          })
+        })
+    }
+  },
   mounted () {
-    this.$sse('/microsign/api/push/group/' + window.sessionStorage.getItem('groupid'), { format: 'json' })
-      .then(sse => {
-        msgServer = sse
-        sse.onError(e => {
-
-        })
-        sse.subscribe('', (message, rawEvent) => {
-          console.warn('Received a message w/o an event!', data)
-        })
-        sse.subscribe('alert', (message, rawEvent) => {
-          this.alert_code = message.code
-        })
-
-        sse.subscribe('sign_in', (message, rawEvent) => {
-          console.log('sign_in')
-          this.sign_in++
-        })
-
-        sse.subscribe('sign_out', (message, rawEvent) => {
-          this.sign_out++
-        })
-      })
+    this.ssereg()
   },
   beforeDestroy () {
     msgServer.close()
