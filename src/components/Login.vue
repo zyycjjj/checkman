@@ -16,11 +16,11 @@
         label-width="0"
       >
         <el-form-item prop="u">
-          <el-input v-model="loginForm.u" prefix-icon="iconfont icon-user"></el-input>
+          <el-input v-model="loginForm.u" prefix-icon="iconfont icon-user" placeholder="请输入用户名"></el-input>
         </el-form-item>
         <!-- 密码 -->
         <el-form-item prop="p">
-          <el-input type="password" v-model="loginForm.p" prefix-icon="iconfont icon-showpassword"></el-input>
+          <el-input type="password" v-model="loginForm.p" prefix-icon="iconfont icon-showpassword" placeholder="请输入密码"></el-input>
         </el-form-item>
         <!-- 按钮区域 -->
         <el-form-item class="btns">

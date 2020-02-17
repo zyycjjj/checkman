@@ -84,10 +84,10 @@
     <div class="footer">
         <div class="footer-content">
             <div class="footer-record ">
-                互联网ICP备案：京ICP备18001231号
+                互联网ICP备案：鲁ICP备19031576号-1
             </div>
             <div class="footer-company">
-              <a href="www.zhiquwl.com" style="color:#333333">©www.zhiquwl.com 智趣物联 版权所有</a>
+              <a href="www.zhiquwl.com" style="color:#333333">©2019-2022 淄博智趣物联科技有限公司 版权所有</a>
           </div>
         </div>
 </div>
