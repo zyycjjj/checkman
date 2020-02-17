@@ -1,29 +1,4 @@
 <template>
-  <!-- <div>
-    <el-button type="success">实时数据</el-button>
-    <el-table :data="realNum" border style="width: 301px">
-      <el-table-column prop="data" label="签入人数" align="center" width="100">
-        <template >
-          <span>{{ sign_in }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="data" label="签出人数" align="center" width="100">
-        <template >
-          <span>{{ sign_out }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="data" v-if="alert_code==0" label="非本小区人员报警" align="center" width="100">
-        <template >
-          <span>{{ alert_code }}</span>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <h4 class="red" v-if="alert_code==1">非本小区人员报警 </h4>
-    <h4 class="red" v-else-if="alert_code==2">疑似感染者报警 </h4>
-    <h4 class="red" v-else-if="alert_code==3">非本小区且疑似感染者报警 </h4>
-    <p>    建议有一个醒目的提醒，几秒钟后自动消除</p>
-  </div>-->
   <div class="container">
   <el-row :gutter="40" class="panel-group">
     <el-col :span="24"><div class="grid-content">
@@ -106,14 +81,24 @@
           </div>
         </el-col>
    </el-row>
-   <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'Edit Register':'警报'" @close="dialogVisible=false">
+    <div class="footer">
+        <div class="footer-content">
+            <div class="footer-record ">
+                互联网ICP备案：京ICP备18001231号
+            </div>
+            <div class="footer-company">
+              <a href="www.zhiquwl.com" style="color:#333333">©www.zhiquwl.com 智趣物联 版权所有</a>
+          </div>
+        </div>
+</div>
+   <el-dialog :visible.sync="dialogVisible" width="500px" height="200px" :title="dialogType==='edit'?'Edit Register':'疑似者预警'" @close="close">
       <div class="card-panel">
             <div class="card-panel-icon-wrapper icon-people">
               <img src="../components/SvgIcon/peoples.svg" class="card-panel-icon" alt />
             </div>
-            <h4 class="alertText">{{alertText}}</h4>
-            <audio id="voice" src="../components/audio/alert.mp3" autoplay></audio>
-          </div>
+             <h4 class="alertText">{{alertText}}</h4>
+            <audio id="voice" src="../components/audio/alertclassic.mp3" autoplay></audio>
+        </div>
       <!-- <el-form :model="regis" class="regisdialog" status-icon :rules="rules2" ref="regis" label-width="80px" label-position="left">
         <el-form-item label="用户名">
           <el-input v-model="regis.nickName" placeholder=""/>
@@ -126,6 +111,7 @@
     </el-dialog>
   </div>
 </template>
+
 <script>
 // import CountTo from 'vue-count-to'
 let msgServer
@@ -140,12 +126,11 @@ export default {
       //   sign_out: Number,
       //   alert_code: Number
       // },
-      sign_in: 0,
-      sign_out: 0,
-      alert_code: 1,
+      sign_in: Number,
+      sign_out: Number,
+      alert_code: Number,
       dialogType: '警告',
       dialogVisible: false,
-      // 警示文本
       alertText: ''
       // imgUrl: '../assets/imgs/peoples.svg'
     }
@@ -155,31 +140,32 @@ export default {
   //   sign_out: Number,
   //   alert_code: Number
   // },
-  // created () {
-  // },
+  created () {
+    this.sign_in = 0
+    this.sign_out = 0
+    this.alert_code = 0
+  },
   mounted () {
     this.$sse(
       '/microsign/api/push/group/' + window.sessionStorage.getItem('groupid'),
       { format: 'json' }
     ).then(sse => {
-      // debugger
       msgServer = sse
       sse.onError(e => {})
+
       sse.subscribe('alert', (message, rawEvent) => {
-        if (message.code) {
-          this.alert_code = message.code
-          if (this.alert_code === 1) {
-            this.alertText = '警报：非本小区人员闯入！！！'
-            this.dialogVisible = true
-          }
-          if (this.alert_code === 2) {
-            this.alertText = '警报： 存在疑似感染者'
-            this.dialogVisible = true
-          }
-          if (this.alert_code === 3) {
-            this.alertText = '警报：非本小区人员闯入且疑似感染'
-            this.dialogVisible = true
-          }
+        this.alert_code = message.code
+        if (this.alert_code === 1) {
+          this.alertText = '警报：非本小区人员闯入！！！'
+          this.dialogVisible = true
+        }
+        if (this.alert_code === 2) {
+          this.alertText = '警报： 存在疑似感染者'
+          this.dialogVisible = true
+        }
+        if (this.alert_code === 3) {
+          this.alertText = '警报：非本小区人员闯入且疑似感染'
+          this.dialogVisible = true
         }
       })
 
@@ -190,9 +176,7 @@ export default {
       sse.subscribe('sign_out', (message, rawEvent) => {
         this.sign_out++
       })
-    }).catch(
-      // console.log('连接失败')
-    )
+    })
   },
   methods: {
     // getUrl () {
@@ -203,7 +187,10 @@ export default {
     // audio.play()
     // }),
     confirm () {
-      this.dialogVisible = false
+      if (this.dialogVisible) {
+        this.dialogVisible = false
+      } else {
+      }
     },
     close () {
       this.dialogVisible = false
@@ -225,6 +212,16 @@ export default {
   padding-bottom: 10px;
   font-size: 15px;
   font-weight: 300;
+}
+.footer {
+  position: absolute;
+  width: 88%;
+  bottom: 2.5em;
+  background: #4d4d4d;
+}
+.footer-content {
+  font-size: 16px;
+  text-align: center;
 }
 .card-panel-icon {
   position:relative;
@@ -301,12 +298,5 @@ export default {
 }
 .card-panel-num {
   font-size: 20px;
-}
-.alertText{
-  font-size: 24px;
-  font-weight: bolder;
-  font-family: '楷书';
-  color: red;
-  margin-left: 110px;
 }
 </style>

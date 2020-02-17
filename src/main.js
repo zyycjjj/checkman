@@ -42,6 +42,7 @@ Vue.filter('dateFilter', function (value) {
 })
 Vue.prototype.$http = axios
 Vue.prototype.$md5 = Md5
+
 Vue.config.productionTip = false
 
 Vue.use(VueSSE)
