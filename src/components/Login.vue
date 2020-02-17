@@ -31,7 +31,6 @@
     </div>
     <!-- 超级管理员登录页面跳转 -->
     <div class="svip_login">
-      <el-button size="mini" type="success" @click="gotoSVip">点击跳转到超级管理员登陆</el-button>
     </div>
   </div>
 </template>

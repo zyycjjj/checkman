@@ -3,10 +3,11 @@
     <!-- 头部区域 -->
     <el-header>
       <div>
-        <img src="../assets/imgs/avatar.jpg" alt />
+        <img src="../assets/imgs/avatar.png" alt />
+        <!-- <span class="company">淄博智趣物联</span> -->
         <span>组织微签管理</span>
       </div>
-      <el-button type="info" @click="logout">退出</el-button>
+      <el-button type="success" @click="logout" class="exit">退出登录</el-button>
     </el-header>
     <!-- 主体 -->
     <el-container>
@@ -78,7 +79,13 @@ export default {
 .home_container {
   height: 100%;
 }
-
+.company {
+  background: #4a8ad4
+}
+.exit {
+  width:120px;
+  font-size: 13px;
+}
 .el-header {
   background-color: #437ecc;
   display: flex;

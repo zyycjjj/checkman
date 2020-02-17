@@ -25,23 +25,22 @@ const routes = [{
   path: '/home',
   component: Home,
   redirect: '/welcome',
-  children: [
-    {
-      path: '/welcome',
-      component: Welcome
-    },
-    {
-      path: '/doorman',
-      component: Doorman
-    },
-    {
-      path: '/peoman',
-      component: Peoman
-    },
-    {
-      path: '/pinfo',
-      component: Pinfo
-    }
+  children: [{
+    path: '/welcome',
+    component: Welcome
+  },
+  {
+    path: '/doorman',
+    component: Doorman
+  },
+  {
+    path: '/peoman',
+    component: Peoman
+  },
+  {
+    path: '/pinfo',
+    component: Pinfo
+  }
   ]
 },
 {
@@ -52,19 +51,18 @@ const routes = [{
   path: '/home-svip',
   component: Homesvip,
   redirect: '/welcomesvip',
-  children: [
-    {
-      path: '/welcomesvip',
-      component: Welcomevip
-    },
-    {
-      path: '/coman',
-      component: Coman
-    },
-    {
-      path: '/data',
-      component: Data
-    }
+  children: [{
+    path: '/welcomesvip',
+    component: Welcomevip
+  },
+  {
+    path: '/coman',
+    component: Coman
+  },
+  {
+    path: '/data',
+    component: Data
+  }
   ]
 }
 ]

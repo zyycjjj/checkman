@@ -250,11 +250,10 @@ export default {
     },
     // 确认修改信息
     async editCompany () {
-      const newP = this.$md5(this.editInfo.p)
-      this.$http.post(`/microsign/api/adm/com`, {
-        p: newP,
-        id: this.editInfo.id
-      })
+      // const res = this.$http.post(`/microsign/api/adm/com`, {
+      //   p: this.editInfo.p,
+      //   id: this.editInfo.id
+      // })
       // if (res.r !== 0) return this.$message.warning('修改信息失败')
       this.$message.success('修改信息成功')
       this.editInfoVis = !this.editInfoVis

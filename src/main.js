@@ -5,7 +5,7 @@ import './plugins/element'
 import 'element-ui/lib/theme-chalk/index.css'
 import Md5 from 'js-md5'
 import VueSSE from 'vue-sse'
-
+// import './icons' // icon
 // 导入全局样式表
 import './assets/css/global.css'
 // 导入axios
@@ -42,7 +42,6 @@ Vue.filter('dateFilter', function (value) {
 })
 Vue.prototype.$http = axios
 Vue.prototype.$md5 = Md5
-
 Vue.config.productionTip = false
 
 Vue.use(VueSSE)
