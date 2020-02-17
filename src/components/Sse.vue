@@ -144,9 +144,6 @@ export default {
     this.sign_in = 0
     this.sign_out = 0
     this.alert_code = 0
-    if (this.alert_code === 0) {
-      this.dialogVisible = true
-    }
   },
   mounted () {
     this.$sse(
